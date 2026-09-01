@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AutoCheck – Kosten & Vergleich</title>
+<style>
+:root{--bg:#07111f;--card:#0d1b2d;--card2:#12263d;--text:#f4f7fb;--muted:#9eb0c5;--accent:#f0c75e;--line:#263d56;--good:#63d69c}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#06101c,#0b192a);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header,main{max-width:1120px;margin:auto}header{padding:28px 18px 18px}main{padding:0 18px 80px}
+h1{margin:0 0 6px;font-size:32px}h2{margin:0 0 14px}.sub,.muted{color:var(--muted)}
+.card{background:rgba(13,27,45,.97);border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+label{display:block;color:var(--muted);font-size:13px;margin:10px 0 5px}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#091728;color:var(--text);font-size:15px}
+button{border:0;border-radius:10px;padding:11px 14px;font-weight:700;cursor:pointer}.primary{background:var(--accent);color:#15120a}.secondary{background:#19304a;color:white;border:1px solid #31506e}.danger{background:#42202a;color:#ffd8de}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}.kpi{padding:14px;border:1px solid var(--line);border-radius:12px;background:#0a1828}.big{font-size:25px;font-weight:800;margin-top:4px}
+.notice{padding:12px;border-radius:12px;background:#14283e;color:#cbd9e8;margin:10px 0}
+.compare-head{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.car-picker{position:relative}.suggestions{position:absolute;left:0;right:0;top:100%;z-index:20;background:#0b1b2c;border:1px solid #45617d;border-radius:10px;overflow:hidden;box-shadow:0 12px 25px #0008}
+.suggestion{display:flex;gap:10px;align-items:center;padding:10px;cursor:pointer}.suggestion:hover{background:#16304a}.suggestion img{width:58px;height:40px;object-fit:cover;border-radius:7px;background:#172c42}
+.selected-car{margin-top:10px;padding:10px;background:#10243a;border:1px solid var(--line);border-radius:10px;display:none}.selected-car img{width:100%;height:120px;object-fit:cover;border-radius:9px;margin-bottom:7px}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:11px 9px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}th{color:#dce7f3}.editable{width:100%;min-width:110px}
+.calc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.calc-title{font-weight:800;margin-top:4px}
+.small{font-size:12px}.empty{color:#7f94aa;text-align:center;padding:18px}
+@media(max-width:700px){h1{font-size:27px}.kpis{grid-template-columns:1fr}.compare-head{grid-template-columns:1fr}.calc-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>AutoCheck</h1>
+<div class="sub">Auto-Kosten berechnen und Fahrzeuge direkt miteinander vergleichen.</div>
+</header>
+<main>
+
+<section class="card">
+<h2>1. Kosten selbst eingeben</h2>
+<div class="notice">Alle Zahlen sind absichtlich <b>leer</b>. Du bestimmst selbst, welche Werte du einträgst.</div>
+<div class="calc-grid">
+<div><label>Kaufpreis (€)</label><input id="price" type="number" min="0"></div>
+<div><label>Jahreskilometer</label><input id="km" type="number" min="0"></div>
+<div><label>Verbrauch (l/100 km)</label><input id="cons" type="number" step=".1" min="0"></div>
+<div><label>Spritpreis (€/l)</label><input id="fuel" type="number" step=".01" min="0"></div>
+<div><label>Versicherung / Jahr (€)</label><input id="ins" type="number" min="0"></div>
+<div><label>Steuer / Jahr (€)</label><input id="tax" type="number" min="0"></div>
+<div><label>Wartung / Jahr (€)</label><input id="maint" type="number" min="0"></div>
+<div><label>Wertverlust / Jahr (€)</label><input id="dep" type="number" min="0"></div>
+</div>
+<br><button class="primary" id="calc">Kosten berechnen</button>
+<div class="kpis">
+<div class="kpi"><div class="muted">Monatlich</div><div class="big" id="monthly">–</div></div>
+<div class="kpi"><div class="muted">Kosten / km</div><div class="big" id="perkm">–</div></div>
+<div class="kpi"><div class="muted">5 Jahre</div><div class="big" id="five">–</div></div>
+</div>
+</section>
+
+<section class="card">
+<h2>2. Autos direkt in der Tabelle auswählen</h2>
+<div class="notice"><b>So funktioniert es:</b> In jeder Spalte ein Auto suchen. Beim Tippen erscheinen passende Modelle. Danach kannst du die Vergleichswerte direkt in der Tabelle ändern.</div>
+<div class="compare-head">
+<div class="car-picker"><label>Auto 1</label><input id="pick0" autocomplete="off" placeholder="z. B. BMW 3er"><div class="suggestions" id="sug0"></div><div class="selected-car" id="sel0"></div></div>
+<div class="car-picker"><label>Auto 2</label><input id="pick1" autocomplete="off" placeholder="z. B. Audi A3"><div class="suggestions" id="sug1"></div><div class="selected-car" id="sel1"></div></div>
+<div class="car-picker"><label>Auto 3 (optional)</label><input id="pick2" autocomplete="off" placeholder="z. B. Tesla Model 3"><div class="suggestions" id="sug2"></div><div class="selected-car" id="sel2"></div></div>
+</div>
+<div id="compareArea" style="margin-top:18px"><div class="empty">Wähle mindestens zwei Autos aus, um die Vergleichstabelle zu sehen.</div></div>
+</section>
+
+<section class="card">
+<h2>3. Fahrzeugdaten zum Nachschlagen</h2>
+<div class="sub">Die Vorschläge sind eine kleine Referenz-Auswahl. Eine spätere Online-Version kann hier eine vollständige, lizenzierte Fahrzeugdatenbank anbinden.</div>
+<div id="catalog" style="margin-top:12px"></div>
+</section>
+
+</main>
+<script>
+const cars=[
+{name:"VW Golf 1.5 TSI",brand:"Volkswagen",drive:"Benzin",price:29835,hp:150,cons:5.4,range:"–",trunk:381,zero:8.5,top:216,co2:123,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Z30738371IHR,2024-Volkswagen-Golf-8.jpg"},
+{name:"VW Golf 2.0 TDI",brand:"Volkswagen",drive:"Diesel",price:33250,hp:150,cons:4.7,range:"–",trunk:381,zero:8.5,top:223,co2:123,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Z30738371IHR,2024-Volkswagen-Golf-8.jpg"},
+{name:"Škoda Octavia 1.5 TSI",brand:"Škoda",drive:"Benzin",price:31990,hp:150,cons:5.5,range:"–",trunk:600,zero:8.5,top:223,co2:125,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/%C5%A0koda_Octavia_131400.jpg"},
+{name:"BMW 3er 320i",brand:"BMW",drive:"Benzin",price:48900,hp:184,cons:6.5,range:"–",trunk:480,zero:7.4,top:235,co2:148,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/BMW_3er_(G20)_140641163.jpg"},
+{name:"BMW 1er",brand:"BMW",drive:"Benzin",price:39900,hp:170,cons:6.0,range:"–",trunk:380,zero:7.8,top:226,co2:137,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/BMW_1_Series_(E87)_164657.jpg"},
+{name:"Audi A3 35 TFSI",brand:"Audi",drive:"Benzin",price:36900,hp:150,cons:5.8,range:"–",trunk:380,zero:8.1,top:224,co2:132,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Audi-A3.jpg"},
+{name:"Mercedes A 200",brand:"Mercedes-Benz",drive:"Benzin",price:39000,hp:163,cons:6.1,range:"–",trunk:405,zero:8.2,top:225,co2:139,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Mercedes-Benz_A_200_(W177)_IMG_0222.jpg"},
+{name:"Tesla Model 3",brand:"Tesla",drive:"Elektro",price:36990,hp:283,cons:13.0,range:513,trunk:594,zero:6.1,top:201,co2:0,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Tesla_Model_3_facelift_2023112701.jpg"},
+{name:"VW ID.3",brand:"Volkswagen",drive:"Elektro",price:39990,hp:204,cons:15.2,range:426,trunk:385,zero:7.6,top:160,co2:0,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/VW_ID.3_1st_2021.jpg"},
+{name:"Hyundai Ioniq 5",brand:"Hyundai",drive:"Elektro",price:44900,hp:229,cons:16.7,range:570,trunk:527,zero:7.4,top:185,co2:0,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Hyundai_Ioniq_5.jpg"},
+{name:"BMW i4 eDrive40",brand:"BMW",drive:"Elektro",price:59900,hp:340,cons:16.1,range:590,trunk:470,zero:5.7,top:190,co2:0,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/BMW_i4_IMG_0138.jpg"},
+{name:"Porsche Taycan",brand:"Porsche",drive:"Elektro",price:102000,hp:435,cons:19.0,range:555,trunk:407,zero:4.8,top:230,co2:0,img:"https://commons.wikimedia.org/wiki/Special:Redirect/file/Porsche_Taycan_4S_Cross_Turismo_IMG_4477.jpg"}
+];
+
+const selected=[null,null,null];
+const $=id=>document.getElementById(id);
+function money(n){return new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n)}
+function calculate(){
+ const ids=["price","km","cons","fuel","ins","tax","maint","dep"], v={};
+ for(const id of ids){v[id]=parseFloat($(id).value); if(!Number.isFinite(v[id])){ $("monthly").textContent="–";$("perkm").textContent="–";$("five").textContent="–";return;}}
+ const fuel=v.km*v.cons/100*v.fuel, annual=fuel+v.ins+v.tax+v.maint+v.dep;
+ $("monthly").textContent=money(annual/12);$("perkm").textContent=(annual/v.km).toFixed(2).replace(".",",")+" €";$("five").textContent=money(annual*5);
+}
+$("calc").onclick=calculate;
+
+function showSuggestions(i){
+ const q=$("pick"+i).value.trim().toLowerCase();
+ const matches=cars.filter(c=>(c.name+" "+c.brand+" "+c.drive).toLowerCase().includes(q)).slice(0,6);
+ $("sug"+i).innerHTML=matches.length?matches.map(c=>`<div class="suggestion" data-car="${c.name}"><img src="${c.img}" alt=""><div><b>${c.name}</b><div class="muted small">${c.brand} · ${c.drive}</div></div></div>`).join(""):"<div class='suggestion'><div class='muted'>Kein Treffer – versuche z. B. Golf, BMW oder Tesla.</div></div>";
+ document.querySelectorAll("#sug"+i+" [data-car]").forEach(el=>el.onclick=()=>choose(i,el.dataset.car));
+}
+function choose(i,name){
+ const car=cars.find(c=>c.name===name);selected[i]=car;$("pick"+i).value=car.name;$("sug"+i).innerHTML="";
+ $("sel"+i).style.display="block";$("sel"+i).innerHTML=`<img src="${car.img}" alt="${car.name}"><b>${car.name}</b><div class="muted">${money(car.price)} · ${car.hp} PS · ${car.drive}</div>`;
+ renderCompare();
+}
+[0,1,2].forEach(i=>$("pick"+i).addEventListener("input",()=>showSuggestions(i)));
+document.addEventListener("click",e=>{
+ if(!e.target.closest(".car-picker"))[0,1,2].forEach(i=>$("sug"+i).innerHTML="");
+});
+
+const rows=[
+["Kaufpreis (€)","price",c=>c.price,"number"],
+["Leistung (PS)","hp",c=>c.hp,"number"],
+["Antrieb","drive",c=>c.drive,"text"],
+["Verbrauch (l/100 km)","cons",c=>c.cons,"number"],
+["Reichweite (km)","range",c=>c.range==="–"?"":c.range,"number"],
+["Kofferraum (l)","trunk",c=>c.trunk,"number"],
+["0–100 km/h (s)","zero",c=>c.zero,"number"],
+["Höchstgeschwindigkeit (km/h)","top",c=>c.top,"number"],
+["CO₂ (g/km)","co2",c=>c.co2,"number"],
+["Sitze","seats",()=>5,"number"],
+["Türen","doors",()=>5,"number"],
+["Versicherung/Jahr (€)","insurance",()=> "","number"],
+["Steuer/Jahr (€)","tax",()=> "","number"],
+["Wartung/Jahr (€)","maintenance",()=> "","number"]
+];
+
+function renderCompare(){
+ const chosen=selected.filter(Boolean);
+ if(chosen.length<2){$("compareArea").innerHTML="<div class='empty'>Wähle mindestens zwei Autos aus, um die Vergleichstabelle zu sehen.</div>";return;}
+ let h="<div class='table-wrap'><table><thead><tr><th>Vergleichspunkt</th>";
+ chosen.forEach(c=>h+=`<th>${c.name}</th>`);h+="</tr></thead><tbody>";
+ rows.forEach(r=>{
+   h+=`<tr><th>${r[0]}</th>`;
+   chosen.forEach((c,idx)=>{let val=r[2](c);h+=`<td><input class="editable" type="${r[3]}" value="${val}" data-row="${r[1]}" data-car="${c.name}"></td>`;});
+   h+="</tr>";
+ });
+ h+="</tbody></table></div><br><button class='primary' id='saveCompare'>Vergleichswerte übernehmen</button> <button class='danger' id='resetCompare'>Auswahl leeren</button><p class='muted small'>Du kannst die automatisch angezeigten Referenzwerte direkt überschreiben. Leere Felder bleiben leer.</p>";
+ $("compareArea").innerHTML=h;
+ $("saveCompare").onclick=()=>alert("Die eingegebenen Vergleichswerte bleiben in dieser Sitzung erhalten.");
+ $("resetCompare").onclick=()=>{selected.fill(null);[0,1,2].forEach(i=>{$("pick"+i).value="";$("sel"+i).style.display="none";});renderCompare();};
+}
+
+function renderCatalog(){
+ $("catalog").innerHTML=cars.map(c=>`<div style="display:grid;grid-template-columns:90px 1fr auto;gap:12px;align-items:center;border-top:1px solid var(--line);padding:12px 0"><img src="${c.img}" alt="${c.name}" style="width:90px;height:58px;object-fit:cover;border-radius:8px"><div><b>${c.name}</b><div class="muted">${c.brand} · ${c.drive} · ${c.hp} PS</div></div><button class="secondary" data-cat="${c.name}">Auswählen</button></div>`).join("");
+ document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>choose(selected.findIndex(x=>!x),b.dataset.cat));
+}
+renderCatalog();
+</script>
+</body>
+</html>
