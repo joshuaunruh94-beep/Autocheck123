@@ -21,7 +21,7 @@ button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1180px;ma
 .optimize-list{display:grid;gap:9px;margin-top:13px}.opt{padding:14px;border:1px solid #2a3a4e;border-radius:13px;background:#0b131e;display:flex;justify-content:space-between;gap:14px;align-items:center}.opt b{display:block}.opt small{color:#6e7e91}.opt strong{color:var(--green);white-space:nowrap}.opt button{padding:8px 10px;border-radius:9px;border:1px solid #33465e;background:#142238;color:#fff;font-weight:800;margin-left:7px}
 .offers{display:grid;gap:9px}.offer{display:grid;grid-template-columns:1fr auto;gap:12px;padding:14px;border:1px solid #2b3a4e;border-radius:13px;background:#0b131e}.offer .provider{font-weight:900}.offer .price{font-size:18px;font-weight:950;margin-top:4px}.offer .save{color:var(--green);font-size:12px;font-weight:850}.offer .meta{color:#68788c;font-size:10px;margin-top:4px}.offer button{align-self:center;padding:9px 11px;border-radius:9px;border:1px solid #33465e;background:#142238;color:#fff;font-weight:850}
 .picker-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.picker{position:relative}.suggestions{position:absolute;left:0;right:0;top:75px;z-index:30;background:#101a27;border:1px solid #41536b;border-radius:13px;overflow:hidden;box-shadow:0 20px 50px #000b}.suggestion{padding:11px;display:flex;gap:11px;border-bottom:1px solid #26364a}.suggestion:hover{background:#172538}.thumb{width:70px;height:43px;background:#162334;border-radius:8px;display:grid;place-items:center}.thumb svg{width:63px}.carvisual{height:125px;margin:12px 0;background:radial-gradient(ellipse at center,#1b2b40,#0b121b 70%);border-radius:14px;display:grid;place-items:center}.carvisual svg{width:90%;max-height:110px}.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.pill{font-size:10px;color:#acbac9;border:1px solid #2c3d52;border-radius:99px;padding:5px 8px}
-.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:13px 10px;border-bottom:1px solid #263447;text-align:left}th{font-size:11px;color:#91a0b3}.best{color:var(--green);font-weight:900}.compare-result{margin-top:14px}
+.tablewrap{box-sizing:border-box;overflow:auto}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:13px 10px;border-bottom:1px solid #263447;text-align:left}th{font-size:11px;color:#91a0b3}.best{color:var(--green);font-weight:900}.compare-result{margin-top:14px}
 .chips{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}.chip{padding:8px 11px;border-radius:10px;border:1px solid #2d3e52;background:#0b131e;color:#aebccc;font-size:12px;cursor:pointer}.chip.on{border-color:#665426;background:#17150e;color:#f0d786}
 .calc{display:grid;grid-template-columns:1fr 1fr;gap:14px}.calcbox{padding:18px;border:1px solid #2b3a4e;border-radius:15px;background:#0b131e}.calcbox h3{margin:0 0 12px}.restwert{font-size:42px;font-weight:950;letter-spacing:-2px}.bar{height:9px;background:#1b2736;border-radius:99px;overflow:hidden;margin:14px 0}.bar i{display:block;height:100%;background:var(--gold);width:55%}.admin{display:none}.admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.admin-tile{padding:15px;border:1px solid var(--line);border-radius:13px;background:#0a121c}.admin-tile b{display:block;margin-bottom:6px}.admin-tile span{font-size:11px;color:var(--muted)}
 @media(max-width:850px){.dashboard{grid-template-columns:1fr}.menu{position:static;display:flex;overflow:auto;gap:5px;padding:0}.menu h3{display:none}.menu button{white-space:nowrap;width:auto}.navlinks{display:none}.grid,.summary,.picker-grid,.calc{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.admin-grid{grid-template-columns:1fr 1fr}.hero h1{letter-spacing:-2px}}
@@ -62,6 +62,23 @@ button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1180px;ma
 
 .more-panel{display:none}
 .more-panel:target{display:block}
+
+/* v8: consistent content proportions */
+main{max-width:1180px;margin:0 auto;padding:28px 24px 70px}
+.card{width:100%;box-sizing:border-box}
+#compare .tablewrap{box-sizing:border-box;width:100%;max-width:100%;overflow-x:auto}
+#compare .tablewrap table{width:100%;table-layout:fixed}
+#compare .tablewrap th:first-child{width:34%}
+#compare .tablewrap th:not(:first-child){width:33%}
+#compare .score-grid{width:100%;box-sizing:border-box}
+#compare .score-card{min-width:0}
+.compare-head{width:100%}
+@media(max-width:700px){
+  main{padding-left:14px;padding-right:14px}
+  #compare .tablewrap table{min-width:0}
+  #compare .tablewrap th:first-child{width:38%}
+  #compare .tablewrap th:not(:first-child){width:31%}
+}
 </style>
 </head>
 <body>
