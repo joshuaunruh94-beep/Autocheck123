@@ -60,7 +60,7 @@ button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1180px;ma
 @media(max-width:900px){.budget-summary{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.budget-summary{grid-template-columns:1fr}}
 
-.more-panel{display:none}
+.more-panel{display:none}.more-panel:target{display:block}
 .more-panel:target{display:block}
 
 /* v8: consistent content proportions */
@@ -94,6 +94,29 @@ main{max-width:1180px;margin:0 auto;padding:28px 24px 70px}
 .compare-result th,.compare-result td{overflow-wrap:anywhere}
 .compare-result .score-grid{width:100%;max-width:100%;box-sizing:border-box}
 .compare-result .compare-head{width:100%;box-sizing:border-box}
+
+/* AutoCheck v10 – consistent premium product flow */
+:root{--ac-max:1180px}
+main{max-width:var(--ac-max)!important;margin:0 auto!important;padding:30px 24px 80px!important}
+section.card{width:100%;box-sizing:border-box;border-radius:22px!important}
+.hero-title{font-size:clamp(34px,5vw,62px)!important;line-height:1.02!important;max-width:850px}
+.hero-sub{font-size:17px!important;max-width:720px;line-height:1.55}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.kpi-hero{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin-top:22px}
+.kpi-main,.kpi-side{border:1px solid #263447;border-radius:20px;padding:22px;background:#101925}
+.kpi-main .big{font-size:clamp(38px,6vw,68px);font-weight:950;letter-spacing:-.04em;line-height:1}
+.kpi-label{color:var(--muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.savings{display:flex;align-items:end;justify-content:space-between;gap:14px}
+.savings strong{font-size:32px}
+.flow-steps{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}
+.flow-step{padding:7px 10px;border-radius:999px;border:1px solid #263447;color:var(--muted);font-size:11px;font-weight:850}
+.flow-step.active{background:#e9eef6;color:#0b1118;border-color:#e9eef6}
+.compare-result,.compare-result .tablewrap,.compare-result table{width:100%;max-width:100%;box-sizing:border-box}
+.compare-result table{table-layout:fixed}
+.compare-result th:first-child{width:34%}.compare-result th:not(:first-child){width:33%}
+.compare-result th,.compare-result td{overflow-wrap:anywhere}
+@media(max-width:850px){.kpi-hero{grid-template-columns:1fr}}
+@media(max-width:600px){main{padding-left:14px!important;padding-right:14px!important}}
 </style>
 </head>
 <body>
@@ -434,5 +457,27 @@ function selectCarByName(name){
   renderPickers();
   renderCompare();
 }
+// AutoCheck v10 summary
+(function(){
+function n(id){const e=document.getElementById(id);return e?Number(e.value||0):0}
+function euro(v){return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v)}
+function update(){
+let monthly=0;
+for(const id of ['totalMonthly','monthlyTotal','resultMonthly','monthly']){
+ const e=document.getElementById(id);
+ if(e){const m=(e.textContent||'').replace(/\./g,'').replace(',','.').match(/\d+(?:\.\d+)?/);if(m){monthly=Number(m[0]);break}}
+}
+if(!monthly){
+ const km=n('km')||15000, cons=n('consumption')||6, fp=n('fuelPrice')||1.85;
+ monthly=(n('insurance')/12)+(n('tax')/12)+(n('maintenance')/12)+(n('tires')/12)+n('finance')+(km*cons/100*fp/12)
+}
+if(monthly<=0)return;
+const s=document.getElementById('acSummary');if(s)s.style.display='grid';
+const a=document.getElementById('acMonthly');if(a)a.textContent=euro(monthly)+'/Monat';
+const y=document.getElementById('acYearly');if(y)y.textContent=euro(monthly*12)+' pro Jahr';
+const sav=document.getElementById('acSaving');if(sav)sav.textContent=euro(Math.round(monthly*12*.08/10)*10);
+}
+document.addEventListener('input',()=>setTimeout(update,60));document.addEventListener('change',()=>setTimeout(update,60));setTimeout(update,250);
+})();
 </script>
 </body></html>
