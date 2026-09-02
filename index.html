@@ -79,6 +79,21 @@ main{max-width:1180px;margin:0 auto;padding:28px 24px 70px}
   #compare .tablewrap th:first-child{width:38%}
   #compare .tablewrap th:not(:first-child){width:31%}
 }
+
+/* v9: strict horizontal alignment across all modules */
+.wrap,.dashboard,.dashboard>div,.section,.section>.card,.compare-result,.picker-grid{
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+}
+.dashboard>div{min-width:0}
+.section{overflow:hidden}
+.compare-result{overflow:hidden}
+.compare-result .tablewrap{width:100%;max-width:100%;box-sizing:border-box;overflow-x:auto}
+.compare-result table{width:100%;min-width:0;max-width:100%;table-layout:fixed}
+.compare-result th,.compare-result td{overflow-wrap:anywhere}
+.compare-result .score-grid{width:100%;max-width:100%;box-sizing:border-box}
+.compare-result .compare-head{width:100%;box-sizing:border-box}
 </style>
 </head>
 <body>
