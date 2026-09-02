@@ -25,6 +25,43 @@ button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1180px;ma
 .chips{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}.chip{padding:8px 11px;border-radius:10px;border:1px solid #2d3e52;background:#0b131e;color:#aebccc;font-size:12px;cursor:pointer}.chip.on{border-color:#665426;background:#17150e;color:#f0d786}
 .calc{display:grid;grid-template-columns:1fr 1fr;gap:14px}.calcbox{padding:18px;border:1px solid #2b3a4e;border-radius:15px;background:#0b131e}.calcbox h3{margin:0 0 12px}.restwert{font-size:42px;font-weight:950;letter-spacing:-2px}.bar{height:9px;background:#1b2736;border-radius:99px;overflow:hidden;margin:14px 0}.bar i{display:block;height:100%;background:var(--gold);width:55%}.admin{display:none}.admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.admin-tile{padding:15px;border:1px solid var(--line);border-radius:13px;background:#0a121c}.admin-tile b{display:block;margin-bottom:6px}.admin-tile span{font-size:11px;color:var(--muted)}
 @media(max-width:850px){.dashboard{grid-template-columns:1fr}.menu{position:static;display:flex;overflow:auto;gap:5px;padding:0}.menu h3{display:none}.menu button{white-space:nowrap;width:auto}.navlinks{display:none}.grid,.summary,.picker-grid,.calc{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.admin-grid{grid-template-columns:1fr 1fr}.hero h1{letter-spacing:-2px}}
+
+.compare-head{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;flex-wrap:wrap}
+.score-grid{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:12px;margin:15px 0}
+.score-card{border:1px solid #263447;border-radius:16px;padding:16px;background:#101925}
+.score-card .score{font-size:34px;font-weight:950;line-height:1}
+.score-card small{display:block;color:var(--muted);margin-top:6px}
+.score-bars{display:grid;gap:10px;margin-top:12px}
+.score-row{display:grid;grid-template-columns:120px 1fr 42px;gap:10px;align-items:center;font-size:12px}
+.score-row .bar{margin:0}
+.group-title{background:#111c2a;color:#f4f7fb;font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.group-title th{padding-top:16px;padding-bottom:10px;border-bottom:0}
+@media(max-width:800px){.score-grid{grid-template-columns:1fr}.score-row{grid-template-columns:105px 1fr 38px}}
+
+/* v5: compact navigation + secondary budget finder */
+.topnav{gap:8px}
+.topnav a{padding:7px 9px;font-size:12px}
+.budget-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.budget-result{margin-top:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.suggestion-card{border:1px solid #263447;border-radius:16px;padding:16px;background:#101925}
+.suggestion-card h4{margin:4px 0 6px;font-size:17px}
+.suggestion-card .price{font-size:21px;font-weight:950}
+.suggestion-card .why{color:var(--muted);font-size:12px;line-height:1.45;margin-top:7px}
+.secondary-tools{margin-top:14px;padding-top:14px;border-top:1px solid #263447}
+@media(max-width:800px){.budget-grid,.budget-result{grid-template-columns:1fr}}
+
+.budget-mode{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.budget-mode button{border:1px solid #33445b;background:#101925;color:#dfe7f2;border-radius:999px;padding:9px 13px;font-weight:800;cursor:pointer}
+.budget-mode button.active{background:#e9eef6;color:#0b1118}
+.budget-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.budget-summary .metric{background:#101925;border:1px solid #263447;border-radius:15px;padding:14px}
+.budget-summary strong{font-size:20px;display:block;margin-top:4px}
+.leasing-note{margin-top:10px;font-size:12px;color:var(--muted)}
+@media(max-width:900px){.budget-summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.budget-summary{grid-template-columns:1fr}}
+
+.more-panel{display:none}
+.more-panel:target{display:block}
 </style>
 </head>
 <body>
@@ -111,16 +148,19 @@ button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1180px;ma
 
 <section id="admin" class="section"><div class="title"><h2>Admin</h2><p>In der späteren Produktversion werden diese Inhalte über ein geschütztes Backend verwaltet.</p></div><div class="card admin-grid"><div class="admin-tile"><b>🚗 Fahrzeuge</b><span>Modelle, Daten, Preise, Bilder</span></div><div class="admin-tile"><b>🛡️ Partner</b><span>Versicherung, Finanzierung, Werkstätten</span></div><div class="admin-tile"><b>💳 Abos</b><span>Preise, Features, Stripe</span></div><div class="admin-tile"><b>📝 Inhalte</b><span>Texte, Empfehlungen, Hinweise</span></div></div></section>
 </div></div>
+
+
+
 </main>
 
 <script>
 const cars=[
-{name:"BMW 3er 320i",brand:"BMW",fuel:"Benzin",price:48900,hp:184,cons:6.5,length:4713,width:1827,height:1440,trunk:480,zero:7.4,top:235,tax:154,ins:1400,res:.57},
-{name:"Audi A3 35 TFSI",brand:"Audi",fuel:"Benzin",price:36900,hp:150,cons:5.8,length:4352,width:1816,height:1431,trunk:380,zero:8.1,top:224,tax:110,ins:1050,res:.54},
-{name:"Mercedes A 200",brand:"Mercedes-Benz",fuel:"Benzin",price:39000,hp:163,cons:6.1,length:4428,width:1796,height:1440,trunk:405,zero:8.2,top:225,tax:130,ins:1150,res:.55},
-{name:"VW Golf 1.5 TSI",brand:"Volkswagen",fuel:"Benzin",price:29835,hp:150,cons:5.4,length:4282,width:1789,height:1491,trunk:381,zero:8.5,top:216,tax:120,ins:950,res:.53},
-{name:"Škoda Octavia 1.5 TSI",brand:"Škoda",fuel:"Benzin",price:31990,hp:150,cons:5.5,length:4698,width:1829,height:1470,trunk:600,zero:8.5,top:223,tax:125,ins:920,res:.55},
-{name:"Tesla Model 3",brand:"Tesla",fuel:"Elektro",price:36990,hp:283,cons:13,length:4720,width:1850,height:1441,trunk:594,zero:6.1,top:201,tax:0,ins:1250,res:.55}];
+{name:"BMW 3er 320i",brand:"BMW",fuel:"Benzin",price:48900,hp:184,weight:1560,cons:6.5,length:4713,width:1827,height:1440,trunk:480,zero:7.4,top:235,tax:154,ins:1400,res:.57},
+{name:"Audi A3 35 TFSI",brand:"Audi",fuel:"Benzin",price:36900,hp:150,weight:1325,cons:5.8,length:4352,width:1816,height:1431,trunk:380,zero:8.1,top:224,tax:110,ins:1050,res:.54},
+{name:"Mercedes A 200",brand:"Mercedes-Benz",fuel:"Benzin",price:39000,hp:163,weight:1465,cons:6.1,length:4428,width:1796,height:1440,trunk:405,zero:8.2,top:225,tax:130,ins:1150,res:.55},
+{name:"VW Golf 1.5 TSI",brand:"Volkswagen",fuel:"Benzin",price:29835,hp:150,weight:1370,cons:5.4,length:4282,width:1789,height:1491,trunk:381,zero:8.5,top:216,tax:120,ins:950,res:.53},
+{name:"Škoda Octavia 1.5 TSI",brand:"Škoda",fuel:"Benzin",price:31990,hp:150,weight:1395,cons:5.5,length:4698,width:1829,height:1470,trunk:600,zero:8.5,top:223,tax:125,ins:920,res:.55},
+{name:"Tesla Model 3",brand:"Tesla",fuel:"Elektro",price:36990,hp:283,weight:1828,cons:13,length:4720,width:1850,height:1441,trunk:594,zero:6.1,top:201,tax:0,ins:1250,res:.55}];
 function money(n){return new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n)}
 function carSvg(){return `<svg viewBox="0 0 520 180"><path d="M70 122h35l25-45q8-15 28-19l62-11h105q20 0 35 17l33 39 53 9q15 3 18 15l4 13h-27a25 25 0 1 1-50 0H167a25 25 0 1 1-50 0H70z" fill="#d8dee7"/><circle cx="142" cy="140" r="17" fill="#111a27"/><circle cx="417" cy="140" r="17" fill="#111a27"/><path d="M213 55l-13 42h132l-32-42z" fill="#6f8096"/></svg>`}
 function show(id){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll(".menu button").forEach(b=>b.classList.toggle("active",b.dataset.section===id));window.scrollTo({top:document.querySelector(".dashboard").offsetTop-80,behavior:"smooth"})}
@@ -131,7 +171,236 @@ const selected=[null,null];
 function renderPickers(){pickers.innerHTML=[0,1].map(i=>`<div class="card picker"><label>Auto ${i+1}</label><input id="q${i}" placeholder="${i?"z. B. Audi A3":"z. B. BMW 320i"}" autocomplete="off"><div class="suggestions" id="s${i}"></div><div class="carvisual">${carSvg()}</div><div id="name${i}" class="muted">Noch kein Auto ausgewählt</div><div id="pills${i}" class="pills"></div></div>`).join("");[0,1].forEach(i=>document.getElementById("q"+i).addEventListener("input",()=>suggest(i)))}
 function suggest(i){let q=document.getElementById("q"+i).value.toLowerCase(),arr=cars.filter(c=>(c.name+" "+c.brand+" "+c.fuel).toLowerCase().includes(q)).slice(0,6);document.getElementById("s"+i).innerHTML=arr.map(c=>`<div class="suggestion" data-car="${c.name}"><div class="thumb">${carSvg()}</div><div><b>${c.name}</b><div class="muted">${c.brand} · ${c.fuel} · ${c.hp} PS</div></div></div>`).join("");document.querySelectorAll("#s"+i+" [data-car]").forEach(x=>x.onclick=()=>choose(i,x.dataset.car))}
 function choose(i,n){selected[i]=cars.find(c=>c.name===n);document.getElementById("q"+i).value=n;document.getElementById("s"+i).innerHTML="";document.getElementById("name"+i).textContent=n;let c=selected[i];document.getElementById("pills"+i).innerHTML=`<span class="pill">${money(c.price)}</span><span class="pill">${c.hp} PS</span><span class="pill">${c.fuel}</span>`;renderCompare()}
-function renderCompare(){if(!selected[0]||!selected[1])return;let a=selected[0],b=selected[1];let rows=[["Kaufpreis",a.price,b.price,x=>money(x),Math.min(a.price,b.price)],["Versicherung",a.ins,b.ins,x=>money(x)+"/Jahr",Math.min(a.ins,b.ins)],["Steuer",a.tax,b.tax,x=>money(x)+"/Jahr",Math.min(a.tax,b.tax)],["Verbrauch",a.cons,b.cons,x=>x+" l/100 km",Math.min(a.cons,b.cons)],["Länge",a.length,b.length,x=>x+" mm",null],["Breite",a.width,b.width,x=>x+" mm",null],["Höhe",a.height,b.height,x=>x+" mm",null],["Kofferraum",a.trunk,b.trunk,x=>x+" l",Math.max(a.trunk,b.trunk)],["Leistung",a.hp,b.hp,x=>x+" PS",Math.max(a.hp,b.hp)],["0–100 km/h",a.zero,b.zero,x=>x+" s",Math.min(a.zero,b.zero)]];compareResult.style.display="block";compareResult.innerHTML=`<h3 style="margin-top:0">${a.name} vs. ${b.name}</h3><div class="chips"><span class="chip on">Kosten</span><span class="chip">Abmessungen</span><span class="chip">Leistung</span><span class="chip">Kofferraum</span><span class="chip">Verbrauch</span><span class="chip">Wertverlust</span><span class="chip">Sicherheit</span></div><div class="tablewrap"><table><thead><tr><th>Vergleichspunkt</th><th>${a.name}</th><th>${b.name}</th></tr></thead><tbody>${rows.map(r=>`<tr><th>${r[0]}</th><td class="${r[4]===r[1]?'best':''}">${r[3](r[1])}${r[4]===r[1]?' ✓':''}</td><td class="${r[4]===r[2]?'best':''}">${r[3](r[2])}${r[4]===r[2]?' ✓':''}</td></tr>`).join("")}</tbody></table></div><div class="callout" style="margin-top:13px"><b>Kernidee:</b> AutoCheck soll den Vergleich nicht bei technischen Daten beenden. Danach kann für beide Fahrzeuge berechnet werden, welches Auto dich voraussichtlich weniger kostet und wo bessere Konditionen verfügbar sind.</div>`}
+function renderCompare(){
+if(!selected[0]||!selected[1])return;
+let a=selected[0],b=selected[1];
+
+function annualCost(c){
+  const energy = 15000*c.cons/100*1.85;
+  const dep = depreciation(c.price,5,c.res);
+  return energy+c.ins+c.tax+dep+420+180;
+}
+function normalizeLow(x,y){let hi=Math.max(x,y),lo=Math.min(x,y);return hi===lo?100:Math.round(100-(x-lo)/(hi-lo)*45)}
+function normalizeHigh(x,y){let hi=Math.max(x,y),lo=Math.min(x,y);return hi===lo?100:Math.round(55+(x-lo)/(hi-lo)*45)}
+function score(c){
+  const ac=annualCost(c);
+  const costBase=annualCost(a), costOther=annualCost(b);
+  const costScore=normalizeLow(ac,c===a?costOther:costBase);
+  const perf=(c.hp/c.weight)*1000;
+  const perfOther=(c===a?b.hp/b.weight*1000:a.hp/a.weight*1000);
+  const perfScore=normalizeHigh(perf,perfOther);
+  const practicalScore=normalizeHigh(c.trunk,c===a?b.trunk:a.trunk);
+  const stabilityScore=normalizeHigh(c.res,c===a?b.res:a.res);
+  const total=Math.round(costScore*.45+perfScore*.20+practicalScore*.20+stabilityScore*.15);
+  return {total,costScore,perfScore,practicalScore,stabilityScore,annual:ac};
+}
+const sa=score(a), sb=score(b);
+const winner=sa.total===sb.total?"Gleichauf":(sa.total>sb.total?a.name:b.name);
+
+function moneyRow(label,av,bv,fmt,better){
+  return `<tr><th>${label}</th><td class="${better==='a'?'best':''}">${fmt(av)}${better==='a'?' ✓':''}</td><td class="${better==='b'?'best':''}">${fmt(bv)}${better==='b'?' ✓':''}</td></tr>`;
+}
+function betterLow(av,bv){return av===bv?'':(av<bv?'a':'b')}
+function betterHigh(av,bv){return av===bv?'':(av>bv?'a':'b')}
+
+const costRows=[
+  moneyRow("Kaufpreis",a.price,b.price,money,betterLow(a.price,b.price)),
+  moneyRow("Versicherung / Jahr",a.ins,b.ins,x=>money(x),betterLow(a.ins,b.ins)),
+  moneyRow("Steuer / Jahr",a.tax,b.tax,x=>money(x),betterLow(a.tax,b.tax)),
+  moneyRow("Verbrauch",a.cons,b.cons,x=>x+" l/100 km",betterLow(a.cons,b.cons)),
+  moneyRow("Wertverlust / Jahr*",depreciation(a.price,5,a.res),depreciation(b.price,5,b.res),x=>money(x),betterLow(depreciation(a.price,5,a.res),depreciation(b.price,5,b.res)))
+].join("");
+
+const basicRows=[
+  moneyRow("Leistung",a.hp,b.hp,x=>x+" PS",betterHigh(a.hp,b.hp)),
+  moneyRow("Gewicht",a.weight,b.weight,x=>x+" kg",betterLow(a.weight,b.weight)),
+  moneyRow("0–100 km/h",a.zero,b.zero,x=>x+" s",betterLow(a.zero,b.zero)),
+  moneyRow("Höchstgeschwindigkeit",a.top,b.top,x=>x+" km/h",betterHigh(a.top,b.top))
+].join("");
+
+const practicalRows=[
+  moneyRow("Kofferraum",a.trunk,b.trunk,x=>x+" l",betterHigh(a.trunk,b.trunk)),
+  moneyRow("Länge",a.length,b.length,x=>x+" mm",null),
+  moneyRow("Breite",a.width,b.width,x=>x+" mm",null)
+].join("");
+
+const stabilityRows=[
+  moneyRow("Geschätzter Restwert nach 5 J.*",a.price*a.res,b.price*b.res,x=>money(x),betterHigh(a.price*a.res,b.price*b.res)),
+  moneyRow("Restwertquote*",a.res,b.res,x=>Math.round(x*100)+" %",betterHigh(a.res,b.res))
+].join("");
+
+compareResult.style.display="block";
+compareResult.innerHTML=`
+<div class="compare-head">
+  <div>
+    <h3 style="margin:0">${a.name} vs. ${b.name}</h3>
+    <p class="muted" style="margin:6px 0 0">Nur die wichtigsten Punkte – zuerst Kosten, dann die Eigenschaften, die im Alltag wirklich zählen.</p>
+  </div>
+  <div class="pill">${winner==="Gleichauf"?"Gleichauf":winner+" gewinnt nach AutoCheck Score"}</div>
+</div>
+
+<div class="score-grid">
+  <div class="score-card">
+    <div class="muted">${a.name}</div>
+    <div class="score">${sa.total}/100</div>
+    <small>AutoCheck Score · Beta</small>
+    <div class="score-bars">
+      <div class="score-row"><span>Kosten</span><div class="bar"><i style="width:${sa.costScore}%"></i></div><b>${sa.costScore}</b></div>
+      <div class="score-row"><span>Performance</span><div class="bar"><i style="width:${sa.perfScore}%"></i></div><b>${sa.perfScore}</b></div>
+      <div class="score-row"><span>Alltag</span><div class="bar"><i style="width:${sa.practicalScore}%"></i></div><b>${sa.practicalScore}</b></div>
+      <div class="score-row"><span>Preisstabilität</span><div class="bar"><i style="width:${sa.stabilityScore}%"></i></div><b>${sa.stabilityScore}</b></div>
+    </div>
+  </div>
+  <div class="score-card">
+    <div class="muted">${b.name}</div>
+    <div class="score">${sb.total}/100</div>
+    <small>AutoCheck Score · Beta</small>
+    <div class="score-bars">
+      <div class="score-row"><span>Kosten</span><div class="bar"><i style="width:${sb.costScore}%"></i></div><b>${sb.costScore}</b></div>
+      <div class="score-row"><span>Performance</span><div class="bar"><i style="width:${sb.perfScore}%"></i></div><b>${sb.perfScore}</b></div>
+      <div class="score-row"><span>Alltag</span><div class="bar"><i style="width:${sb.practicalScore}%"></i></div><b>${sb.practicalScore}</b></div>
+      <div class="score-row"><span>Preisstabilität</span><div class="bar"><i style="width:${sb.stabilityScore}%"></i></div><b>${sb.stabilityScore}</b></div>
+    </div>
+  </div>
+  <div class="score-card">
+    <div class="muted">Was zählt?</div>
+    <div style="font-size:18px;font-weight:900;margin-top:4px">Kosten 45 %</div>
+    <small>Performance 20 % · Alltag 20 % · Preisstabilität 15 %</small>
+    <div class="callout" style="margin-top:12px">Der Score soll keine „beste Auto“-Meinung sein, sondern zeigen, welches Fahrzeug im konkreten Vergleich insgesamt stärker abschneidet.</div>
+  </div>
+</div>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Vergleich</th><th>${a.name}</th><th>${b.name}</th></tr></thead>
+<tbody>
+<tr class="group-title"><th colspan="3">💰 Kosten</th></tr>${costRows}
+<tr class="group-title"><th colspan="3">⚙️ Grundfakten</th></tr>${basicRows}
+<tr class="group-title"><th colspan="3">🧳 Alltag & Praktikabilität</th></tr>${practicalRows}
+<tr class="group-title"><th colspan="3">📈 Preisstabilität</th></tr>${stabilityRows}
+</tbody></table></div>
+
+<div class="callout" style="margin-top:13px">
+<b>AutoCheck-Logik:</b> Kosten werden am stärksten gewichtet. Danach fließen Leistung/Gewicht, Alltagstauglichkeit und erwartete Preisstabilität ein. 
+Damit wird der Vergleich nicht zu einer langen Datenliste, sondern zu einer Entscheidungshilfe.
+</div>
+<div class="muted" style="font-size:11px;margin-top:9px">
+* Restwert und Wertverlust sind im Prototyp Schätzwerte. In der Live-Version sollte AutoCheck dafür belastbare Marktdaten verwenden.
+</div>`;
+}
 renderPickers();document.addEventListener("click",e=>{if(!e.target.closest(".picker"))document.querySelectorAll(".suggestions").forEach(x=>x.innerHTML="")});
+
+
+// Budget Finder – purchase + leasing, using total monthly cost
+let budgetMode = 'buy';
+const buyBtn = document.getElementById('budgetBuyMode');
+const leaseBtn = document.getElementById('budgetLeaseMode');
+const leaseInputs = document.getElementById('leaseInputs');
+
+if (buyBtn && leaseBtn) {
+  buyBtn.addEventListener('click',()=>{budgetMode='buy';buyBtn.classList.add('active');leaseBtn.classList.remove('active');leaseInputs.style.display='none';});
+  leaseBtn.addEventListener('click',()=>{budgetMode='lease';leaseBtn.classList.add('active');buyBtn.classList.remove('active');leaseInputs.style.display='grid';});
+}
+
+const budgetFind = document.getElementById('budgetFind');
+if (budgetFind) {
+  budgetFind.addEventListener('click', () => {
+    const monthlyBudget = Number(document.getElementById('budgetMonthly').value || 0);
+    const cls = document.getElementById('budgetClass').value;
+    const priority = document.getElementById('budgetPriority').value;
+    const result = document.getElementById('budgetResults');
+    const leaseTerm = Number(document.getElementById('leaseTerm')?.value || 36);
+    const leaseKm = Number(document.getElementById('leaseKm')?.value || 15000);
+    const leaseDown = Number(document.getElementById('leaseDown')?.value || 0);
+
+    const classMap = {
+      kleinwagen:['VW Golf 1.5 TSI','Audi A3 35 TFSI'],
+      kompakt:['VW Golf 1.5 TSI','Audi A3 35 TFSI','Mercedes A 200','Škoda Octavia 1.5 TSI'],
+      mittelklasse:['BMW 3er 320i','Škoda Octavia 1.5 TSI'],
+      suv:['Škoda Octavia 1.5 TSI','Tesla Model 3'],
+      premium:['BMW 3er 320i','Mercedes A 200','Tesla Model 3'],
+      sport:['BMW 3er 320i','Tesla Model 3']
+    };
+
+    function ownershipMonthly(c){
+      const energy = (15000*c.cons/100*1.85)/12;
+      const dep = depreciation(c.price,5,c.res)/12;
+      return energy + c.ins/12 + c.tax/12 + dep + 420/12 + 180/12;
+    }
+
+    function leasingMonthly(c){
+      // Prototype estimate only: actual lease rate must come from live partner offers.
+      const baseRate = c.price * 0.011;
+      const mileageAdj = Math.max(0,(leaseKm-15000)/5000)*35;
+      const downAdj = leaseDown/leaseTerm;
+      const leaseRate = baseRate + mileageAdj + downAdj;
+      const energy = (leaseKm*c.cons/100*1.85)/12;
+      const insurance = c.ins/12;
+      const tax = c.tax/12;
+      const maintenance = 35;
+      const tires = 20;
+      return leaseRate + energy + insurance + tax + maintenance + tires;
+    }
+
+    const candidates = (classMap[cls] || [])
+      .map(name => cars.find(c => c.name === name))
+      .filter(Boolean)
+      .map(c => {
+        const total = budgetMode==='buy' ? ownershipMonthly(c) : leasingMonthly(c);
+        let fit = Math.max(0,100 - Math.abs(total-monthlyBudget)/Math.max(monthlyBudget,1)*100);
+        if(priority==='kosten') fit += Math.max(0,50-total/10);
+        if(priority==='wert') fit += c.res*30;
+        if(priority==='performance') fit += c.hp/10;
+        if(priority==='alltag') fit += c.trunk/20;
+        if(priority==='allround') fit += c.res*15 + c.trunk/40 + c.hp/20;
+        return {...c,total,fit};
+      })
+      .filter(c => c.total <= monthlyBudget)
+      .sort((a,b)=>b.fit-a.fit)
+      .slice(0,3);
+
+    if(!monthlyBudget || monthlyBudget < 100){
+      result.innerHTML='<div class="callout">Bitte ein realistisches Monatsbudget eingeben.</div>';
+      return;
+    }
+    if(!candidates.length){
+      result.innerHTML='<div class="callout">Für diese Kombination haben wir im aktuellen Prototyp kein passendes Fahrzeug. In der Live-Version durchsucht AutoCheck dafür eine größere Fahrzeug- und Angebotsdatenbank.</div>';
+      return;
+    }
+
+    const modeLabel = budgetMode==='buy'?'Kauf':'Leasing';
+    result.innerHTML = `
+      <div style="grid-column:1/-1">
+        <div class="budget-summary">
+          <div class="metric"><span class="muted">Dein Budget</span><strong>${money(monthlyBudget)}/Monat</strong></div>
+          <div class="metric"><span class="muted">Modus</span><strong>${modeLabel}</strong></div>
+          <div class="metric"><span class="muted">Klasse</span><strong>${document.getElementById('budgetClass').selectedOptions[0].text}</strong></div>
+          <div class="metric"><span class="muted">Gefunden</span><strong>${candidates.length} passende</strong></div>
+        </div>
+      </div>
+      ${candidates.map((c,i)=>`
+      <div class="suggestion-card">
+        <div class="muted">${i===0?'TOP-MATCH':'PASSEND'}</div>
+        <h4>${c.name}</h4>
+        <div class="price">${money(c.total)} / Monat</div>
+        <div class="why">
+          Geschätzte Gesamtkosten inkl. ${budgetMode==='buy'?'Wertverlust,':'Leasingrate,'} Versicherung, ${budgetMode==='buy'?'Steuer,':'Steuer,'} Energie und laufender Kosten.<br>
+          ${c.hp} PS · ${c.weight} kg · ${c.trunk} l Kofferraum
+        </div>
+        <button class="secondary" style="margin-top:12px" onclick="selectCarByName('${c.name.replace(/'/g,"\\'")}'); location.hash='compare'">Vergleichen →</button>
+      </div>`).join('')}
+      <div class="leasing-note" style="grid-column:1/-1">
+        ${budgetMode==='lease'
+          ? 'Leasingkosten sind hier nur eine Prototyp-Schätzung. In der Live-Version müssen echte, aktuelle Leasingangebote und Vertragsbedingungen einbezogen werden.'
+          : 'Kaufkosten sind hier eine Prototyp-Schätzung. In der Live-Version sollten aktuelle Fahrzeug-, Versicherungs-, Energie- und Marktdaten einfließen.'}
+      </div>`;
+  });
+}
+function selectCarByName(name){
+  const car = cars.find(c=>c.name===name);
+  if(!car) return;
+  selected[0]=car;
+  renderPickers();
+  renderCompare();
+}
 </script>
 </body></html>
